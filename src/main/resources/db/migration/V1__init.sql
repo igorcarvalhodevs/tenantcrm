@@ -1,0 +1,2 @@
+-- V1: init schema (baseline)
+-- (vamos evoluir em migrations futuras)
