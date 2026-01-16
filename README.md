@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-"# TenantCRM" 
-=======
 # TenantCRM
 
 [Português](./README.pt-BR.md)
@@ -79,14 +76,10 @@ docker compose up -d
 Default DB:
 
 - Host: localhost
-
 - Port: 5432
-
 - Database: tenantcrm
-
 - User: tenantcrm
-
-- Password: tenantcrm
+- Password: tenantcrm (dev only)
 
 ### 2) Run the API
 
@@ -109,10 +102,11 @@ http://localhost:8080
 ```json
 {
   "tenantSlug": "acme",
-  "email": "owner@acme.com",
-  "password": "Admin@123"
+  "email": "demo@acme.com",
+  "password": "ChangeMe123!"
 }
 ```
+Note: Credentials above are demo seed only. Use your own values locally.
 
 Response:
 ```json
@@ -154,10 +148,11 @@ List workspaces for the tenant inferred from the JWT.
 
 This repository does not include real secrets.
 
-- .env, secret keys, keystores, and environment-specific configs must remain local and are ignored via .gitignore.
-- Use *.example files for templates (e.g., .env.example) if needed.
+- Database credentials and JWT secrets shown here are **for local development only**.
+- Production deployments must use environment variables or a secure secret manager.
+- Sensitive files such as `.env`, keystores, and environment-specific configs are ignored via `.gitignore`.
 
-If you intend to deploy, use a secret manager (recommended) and CI/CD environment variables.
+Example configuration values are provided only to simplify local setup.
 
 ---
 
@@ -197,4 +192,4 @@ MIT
 ## Author
 
 Igor Carvalho
->>>>>>> 6fedd0a (docs: move main README files to repository root)
+

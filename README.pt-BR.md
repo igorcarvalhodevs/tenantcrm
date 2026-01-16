@@ -1,8 +1,3 @@
-
----
-
-## README.pt-BR.md — cole na raiz
-```md
 # TenantCRM
 
 [English](./README.md)
@@ -78,12 +73,13 @@ Na pasta backend/:
 docker compose up -d
 ```
 
-- Banco padrão:
+Banco padrão:
+
 - Host: localhost
 - Porta: 5432
 - Database: tenantcrm
 - User: tenantcrm
-- Password: tenantcrm
+- Password: tenantcrm (dev only)
 
 ## 2) Rodar a API
 
@@ -104,10 +100,12 @@ POST /auth/login
 ```json
 {
   "tenantSlug": "acme",
-  "email": "owner@acme.com",
-  "password": "Admin@123"
+  "email": "demo@acme.com",
+  "password": "ChangeMe123!"
 }
 ``` 
+Nota: As credenciais acima são apenas seed/demo para ambiente local.
+
 Resposta:
 
 ```json
@@ -145,13 +143,13 @@ Respostas esperadas:
 
 ## Segurança e segredos (importante)
 
-Este repositório não inclui segredos reais.
+Este repositório não contém segredos reais.
 
-- .env, chaves, keystores e configs específicas de ambiente devem ficar locais e estão no .gitignore.
+- As credenciais de banco e o segredo JWT exibidos são **exclusivos para ambiente de desenvolvimento local**.
+- Em produção, devem ser utilizados **variáveis de ambiente ou um gerenciador de segredos**.
+- Arquivos sensíveis como `.env`, keystores e configurações específicas de ambiente estão ignorados via `.gitignore`.
 
-- Use arquivos *.example como modelo (ex.: .env.example) quando necessário.
-
-Para deploy, use variáveis de ambiente e/ou um secret manager.
+Os valores apresentados servem apenas para facilitar a execução local do projeto.
 
 ---
 
