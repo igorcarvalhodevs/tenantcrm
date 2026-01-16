@@ -1,0 +1,2 @@
+-- V1: init (placeholder)
+-- Mantido apenas para garantir baseline limpo.

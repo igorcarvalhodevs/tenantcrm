@@ -1,0 +1,15 @@
+services:
+  tenantcrm-db:
+    image: postgres:16-alpine
+    container_name: tenantcrm-db
+    environment:
+      POSTGRES_DB: tenantcrm
+      POSTGRES_USER: tenantcrm
+      POSTGRES_PASSWORD: tenantcrm
+    ports:
+      - "5432:5432"
+    volumes:
+      - tenantcrm_pgdata:/var/lib/postgresql/data
+
+volumes:
+  tenantcrm_pgdata:

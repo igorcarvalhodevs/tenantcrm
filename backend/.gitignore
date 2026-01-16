@@ -1,0 +1,80 @@
+############################################
+# TenantCRM - .gitignore (portfolio/prod)
+############################################
+
+### Java / Maven ###
+target/
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+
+# Maven Wrapper (manter o jar do wrapper)
+!.mvn/wrapper/maven-wrapper.jar
+
+### Spring ###
+logs/
+log/
+.springBeans
+.sts4-cache
+
+### Environment / Secrets ###
+.env
+.env.*
+!.env.example
+
+secrets/
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+
+### Configs locais (não versionar) ###
+application-local.yml
+application-dev.yml
+application-prod.yml
+application-*.yml
+
+### IDEs ###
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### VS Code ###
+.vscode/
+
+### Docker volumes / overrides ###
+docker-data/
+postgres-data/
+pgdata/
+docker-compose.override.yml
+
+### Coverage / Reports ###
+coverage/
+jacoco/
+*.exec
+
+### Node / Front (quando chegar no front) ###
+node_modules/
+dist/
+build/
+.next/
+out/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
