@@ -1,2 +1,2 @@
--- V1: init schema (baseline)
--- (vamos evoluir em migrations futuras)
+-- V1: init (placeholder)
+-- Mantido apenas para garantir baseline limpo.

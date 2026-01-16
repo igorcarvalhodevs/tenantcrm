@@ -1,23 +1,66 @@
-HELP.md
+############################################
+# TenantCRM - .gitignore (portfolio/prod)
+############################################
+
+### Maven / Java ###
 target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+# Maven Wrapper (NÃO ignorar o jar do wrapper)
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Spring ###
+HELP.md
+.springBeans
+.sts4-cache
+logs/
+log/
+
+### Environment / Secrets ###
+.env
+.env.*
+!.env.example
+
+# Configs locais (não versionar credenciais)
+application-local.yml
+application-dev.yml
+application-prod.yml
+application-*.yml
+!application.yml
+
+# Se você usar arquivos de segredo
+secrets/
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+
+### OS ###
+.DS_Store
+Thumbs.db
 
 ### STS ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -31,3 +74,38 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Docker ###
+# Se você criar pastas locais para volume de dados
+docker-data/
+postgres-data/
+pgdata/
+**/docker-data/
+**/postgres-data/
+**/pgdata/
+
+# Overrides locais
+docker-compose.override.yml
+
+### Coverage / Reports ###
+coverage/
+jacoco/
+*.exec
+
+### Node / Front (quando chegar no front) ###
+node_modules/
+dist/
+build/
+.next/
+out/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+### Misc ###
+*.swp
+*.swo
+*.tmp
+*.bak
