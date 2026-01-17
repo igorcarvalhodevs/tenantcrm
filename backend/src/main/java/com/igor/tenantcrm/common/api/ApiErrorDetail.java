@@ -5,3 +5,4 @@ public record ApiErrorDetail(
         String message
 ) {}
 
+

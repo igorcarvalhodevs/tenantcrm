@@ -6,7 +6,9 @@ import com.igor.tenantcrm.common.exceptions.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,10 +16,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiErrorResponse> handleApi(ApiException ex, HttpServletRequest req) {
+        var body = new ApiErrorResponse(
+                ex.getCode(),
+                ex.getMessage(),
+                req.getRequestURI(),
+                ex.getStatus().value(),
+                OffsetDateTime.now(),
+                List.of()
+        );
+        return ResponseEntity.status(ex.getStatus()).body(body);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
@@ -25,55 +39,73 @@ public class GlobalExceptionHandler {
                 .map(this::toDetail)
                 .toList();
 
-        return build(HttpStatus.BAD_REQUEST, "Validation failed", "VALIDATION_ERROR", req, details);
+        var body = new ApiErrorResponse(
+                "VALIDATION_ERROR",
+                "Validation failed",
+                req.getRequestURI(),
+                HttpStatus.BAD_REQUEST.value(),
+                OffsetDateTime.now(),
+                details
+        );
+        return ResponseEntity.badRequest().body(body);
     }
 
-    @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiErrorResponse> handleApiException(ApiException ex, HttpServletRequest req) {
-        // Aqui você pode mapear por tipo (BadRequestException -> 400, ConflictException -> 409 etc.)
-        HttpStatus status = switch (ex.getCode()) {
-            case "CONFLICT" -> HttpStatus.CONFLICT;
-            case "NOT_FOUND" -> HttpStatus.NOT_FOUND;
-            case "BAD_REQUEST" -> HttpStatus.BAD_REQUEST;
-            default -> HttpStatus.BAD_REQUEST;
-        };
-
-        return build(status, ex.getMessage(), ex.getCode(), req, null);
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnreadable(HttpMessageNotReadableException ex, HttpServletRequest req) {
+        var body = new ApiErrorResponse(
+                "INVALID_JSON",
+                "Malformed JSON request",
+                req.getRequestURI(),
+                HttpStatus.BAD_REQUEST.value(),
+                OffsetDateTime.now(),
+                List.of()
+        );
+        return ResponseEntity.badRequest().body(body);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
-        return build(HttpStatus.FORBIDDEN, "Access denied", "FORBIDDEN", req, null);
+    public ResponseEntity<ApiErrorResponse> handleForbidden(AccessDeniedException ex, HttpServletRequest req) {
+        var body = new ApiErrorResponse(
+                "FORBIDDEN",
+                "Access denied",
+                req.getRequestURI(),
+                HttpStatus.FORBIDDEN.value(),
+                OffsetDateTime.now(),
+                List.of()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnauthorized(AuthenticationException ex, HttpServletRequest req) {
+        var body = new ApiErrorResponse(
+                "UNAUTHORIZED",
+                "Unauthorized",
+                req.getRequestURI(),
+                HttpStatus.UNAUTHORIZED.value(),
+                OffsetDateTime.now(),
+                List.of()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleUnexpected(Exception ex, HttpServletRequest req) {
-        // Não exponha stack trace em API pública
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", "INTERNAL_ERROR", req, null);
+    public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex, HttpServletRequest req) {
+        var body = new ApiErrorResponse(
+                "INTERNAL_ERROR",
+                "Unexpected error",
+                req.getRequestURI(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                OffsetDateTime.now(),
+                List.of()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     private ApiErrorDetail toDetail(FieldError fe) {
         return new ApiErrorDetail(fe.getField(), fe.getDefaultMessage());
     }
-
-    private ResponseEntity<ApiErrorResponse> build(HttpStatus status, String message, String code,
-                                                   HttpServletRequest req, List<ApiErrorDetail> details) {
-
-        String traceId = UUID.randomUUID().toString();
-
-        ApiErrorResponse body = new ApiErrorResponse(
-                OffsetDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                code,
-                req.getRequestURI(),
-                traceId,
-                details
-        );
-
-        return ResponseEntity.status(status).body(body);
-    }
 }
+
 
 

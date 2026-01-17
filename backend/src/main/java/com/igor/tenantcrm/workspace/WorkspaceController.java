@@ -2,12 +2,11 @@ package com.igor.tenantcrm.workspace;
 
 import com.igor.tenantcrm.workspace.dto.WorkspaceCreateRequest;
 import com.igor.tenantcrm.workspace.dto.WorkspaceResponse;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,15 +38,11 @@ public class WorkspaceController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkspaceResponse> create(@RequestBody WorkspaceCreateRequest req) {
-        WorkspaceResponse created = service.create(tenantIdFromToken(), req);
-
-        // se WorkspaceResponse tiver o id (recomendado), monte o Location:
-        URI location = URI.create("/workspaces/" + created.id());
-
-        return ResponseEntity.created(location).body(created);
+    public WorkspaceResponse create(@Valid @RequestBody WorkspaceCreateRequest req) {
+        return service.create(tenantIdFromToken(), req);
     }
 }
+
 
 
 

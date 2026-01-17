@@ -1,6 +1,5 @@
 package com.igor.tenantcrm.workspace;
 
-import com.igor.tenantcrm.common.exceptions.BadRequestException;
 import com.igor.tenantcrm.common.exceptions.ConflictException;
 import com.igor.tenantcrm.workspace.dto.WorkspaceCreateRequest;
 import com.igor.tenantcrm.workspace.dto.WorkspaceResponse;
@@ -27,13 +26,9 @@ public class WorkspaceService {
     }
 
     public WorkspaceResponse create(UUID tenantId, WorkspaceCreateRequest req) {
-        String name = req.name() == null ? "" : req.name().trim();
+        String name = req.name().trim();
 
-        if (name.isBlank()) {
-            throw new BadRequestException("name is required");
-        }
-
-        // Checagem amigável (boa UX, mas não substitui o índice único)
+        // checagem amigável antes do banco
         if (repo.existsByTenantIdAndNameIgnoreCase(tenantId, name)) {
             throw new ConflictException("workspace already exists");
         }
@@ -47,7 +42,7 @@ public class WorkspaceService {
             return WorkspaceResponse.from(saved);
 
         } catch (DataIntegrityViolationException ex) {
-            // Última linha de defesa (condição de corrida / concorrência)
+            // fallback se estourar unique index
             throw new ConflictException("workspace already exists");
         }
     }

@@ -4,13 +4,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public record ApiErrorResponse(
-        OffsetDateTime timestamp,
-        int status,
-        String error,
-        String message,
         String code,
+        String message,
         String path,
-        String traceId,
+        int status,
+        OffsetDateTime timestamp,
         List<ApiErrorDetail> details
 ) {}
+
 
