@@ -1,7 +1,16 @@
 package com.igor.tenantcrm.common.exceptions;
 
-public class BadRequestException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class BadRequestException extends ApiException {
+
     public BadRequestException(String message) {
-        super(message);
+        super(HttpStatus.BAD_REQUEST, "bad_request", message);
+    }
+
+    public BadRequestException(String code, String message) {
+        super(HttpStatus.BAD_REQUEST, code, message);
     }
 }
+
+
